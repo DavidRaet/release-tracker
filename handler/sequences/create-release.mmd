@@ -1,0 +1,21 @@
+
+sequenceDiagram
+    participant F as Frontend
+    participant B as Go Backend
+    participant D as PostgreSQL
+
+    F->>B: POST /v1/releases + JSON payload
+
+    alt Invalid request body
+        B-->>F: 400 Bad Request
+    else Valid request body
+        B->>D: INSERT new movie
+
+        alt Insert succeeds
+            D-->>B: Created movie with ID
+            B-->>F: 201 Created + JSON data
+        else Database failure
+            D-->>B: Database error
+            B-->>F: 500 Internal Server Error
+        end
+    end

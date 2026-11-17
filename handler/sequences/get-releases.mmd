@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant F as Frontend
+    participant B as Go Backend
+    participant D as PostgreSQL
+
+    F->>B: GET /v1/releases
+    B->>D: Query all movies
+
+    alt Query succeeds
+        D-->>B: Movie records (possibly empty)
+        B-->>F: 200 OK + JSON data
+    else Database failure
+        D-->>B: Database error
+        B-->>F: 500 Internal Server Error
+    end

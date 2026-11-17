@@ -1,0 +1,24 @@
+
+sequenceDiagram
+    participant F as Frontend
+    participant B as Go Backend
+    participant D as PostgreSQL
+
+    F->>B: PUT /v1/releases/{id} + JSON payload
+
+    alt Invalid ID or request body
+        B-->>F: 400 Bad Request
+    else Valid request
+        B->>D: UPDATE movie by ID
+
+        alt Movie updated
+            D-->>B: Updated movie record
+            B-->>F: 200 OK + JSON data
+        else Movie not found
+            D-->>B: No matching row
+            B-->>F: 404 Not Found
+        else Database failure
+            D-->>B: Database error
+            B-->>F: 500 Internal Server Error
+        end
+    end

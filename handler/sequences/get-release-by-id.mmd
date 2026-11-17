@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant F as Frontend
+    participant B as Go Backend
+    participant D as PostgreSQL
+
+    F->>B: GET /v1/releases/{id}
+
+    alt Invalid ID format
+        B-->>F: 400 Bad Request
+    else Valid ID
+        B->>D: Query movie by ID
+
+        alt Movie found
+            D-->>B: Movie record
+            B-->>F: 200 OK + JSON data
+        else Movie not found
+            D-->>B: No matching row
+            B-->>F: 404 Not Found
+        else Database failure
+            D-->>B: Database error
+            B-->>F: 500 Internal Server Error
+        end
+    end
